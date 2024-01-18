@@ -1,4 +1,5 @@
 import pickle
+from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import fbeta_score, precision_score, recall_score
 from ml.data import process_data
 # TODO: add necessary import
@@ -20,8 +21,11 @@ def train_model(X_train, y_train):
         Trained machine learning model.
     """
    # TODO: implement the function
-    pass
+    model = RandomForestClassifier(random_state=42)
 
+    model.fit(X_train, y_train)
+
+    return model
 
 def compute_model_metrics(y, preds):
     """
@@ -50,7 +54,7 @@ def inference(model, X):
 
     Inputs
     ------
-    model : ???
+    model : object
         Trained machine learning model.
     X : np.array
         Data used for prediction.
@@ -60,7 +64,10 @@ def inference(model, X):
         Predictions from the model.
     """
     # TODO: implement the function
-    pass
+    # Use the trained model to make predictions on the input data X
+    preds = model.predict(X)
+
+    return preds
 
 def save_model(model, path):
     """ Serializes model to a file.
@@ -73,12 +80,27 @@ def save_model(model, path):
         Path to save pickle file.
     """
     # TODO: implement the function
-    pass
+    try:
+        # Serialize the model and save it to the specified path using pickle
+        with open(path, 'wb') as file:
+            pickle.dump(model, file)
+        print(f"Model saved to {path}")
+
+    except Exception as e:
+        print(f"Error while saving the model: {str(e)}")
 
 def load_model(path):
     """ Loads pickle file from `path` and returns it."""
     # TODO: implement the function
-    pass
+    try:
+        # Deserialize and load the model from the specified path using pickle
+        with open(path, 'rb') as file:
+            loaded_model = pickle.load(file)
+        return loaded_model
+
+    except Exception as e:
+        print(f"Error while loading the model: {str(e)}")
+        return None # Return None to indicate failure if an exception occurs
 
 
 def performance_on_categorical_slice(
@@ -107,7 +129,7 @@ def performance_on_categorical_slice(
         Trained sklearn OneHotEncoder, only used if training=False.
     lb : sklearn.preprocessing._label.LabelBinarizer
         Trained sklearn LabelBinarizer, only used if training=False.
-    model : ???
+    model : object
         Model used for the task.
 
     Returns
@@ -118,11 +140,16 @@ def performance_on_categorical_slice(
 
     """
     # TODO: implement the function
-    X_slice, y_slice, _, _ = process_data(
-        # your code here
-        # for input data, use data in column given as "column_name", with the slice_value 
-        # use training = False
-    )
-    preds = # your code here to get prediction on X_slice using the inference function
+    # Filter the data based on the specified column and value
+    sliced_data = data[data[column_name] == slice_value]
+
+    # Extract features and labels for the sliced data
+    X_slice, y_slice, _, _ = process_data(sliced_data, categorical_features, label, training=False, encoder=encoder, lb=lb)
+
+    # Use the provided model to make predictions on the sliced data
+    preds = inference(model, X_slice)
+
+    # Calculate precision, recall, and F-beta score using the compute_model_metrics function
     precision, recall, fbeta = compute_model_metrics(y_slice, preds)
+
     return precision, recall, fbeta
