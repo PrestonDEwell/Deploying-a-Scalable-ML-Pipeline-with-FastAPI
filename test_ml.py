@@ -10,7 +10,8 @@ from ml.data import process_data
 from ml.model import compute_model_metrics, inference, train_model
 
 project_path = "/mnt/c/Users/prest/Deploying-a-Scalable-ML-Pipeline-with-FastAPI"
-data_path = os.path.join(project_path, "data", "census.csv")
+#data_path = os.path.join(project_path, "data", "census.csv")
+data_path = os.path.join("data", "census.csv")
 
 data = pd.read_csv(data_path)
 
