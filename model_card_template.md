@@ -26,7 +26,8 @@ and "<=50K".
 
 ## Evaluation Data
 The model's performance was evaluated on a separate test dataset, which was split 
-from the original dataset to assess its generalization capabilities.
+from the original dataset to assess its generalization capabilities. The test dataset
+made up 20% of the original data, with the other 80% making up the training data.
 
 ## Metrics
 The following metrics were used to evaluate the model's performance:
